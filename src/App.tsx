@@ -10,7 +10,7 @@ import {
   OrderStatus,
   PrivacyPolicy,
   useSite,
-} from '@booqy/site-kit'
+} from '@bookingsystemadvancedorg/site-kit'
 import { CustomerLayout } from './shared/CustomerLayout'
 import MenyPage from './features/meny/MenyPage'
 import KontaktPage from './features/kontakt/KontaktPage'
@@ -19,7 +19,7 @@ import OmOssPage from './features/om/OmOssPage'
 /**
  * Restaurangens publika webbplats - samma sajt för alla restauranger, med
  * innehållet från GET /site-config. Flödena (boka, beställ, catering,
- * juridik) kommer från @booqy/site-kit; den här appen är layouten, sidorna
+ * juridik) kommer från @bookingsystemadvancedorg/site-kit; den här appen är layouten, sidorna
  * och looken. Menyn är startsida;
  * okända sökvägar skickas dit. Boka bord och dess sidor finns bara när
  * restaurangen har bokning i sin plan; Beställ (avhämtning och QR-koden på

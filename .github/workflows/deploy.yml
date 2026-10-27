@@ -83,7 +83,7 @@ jobs:
           node-version: "24"
           cache: npm
           registry-url: https://npm.pkg.github.com
-          scope: "@booqy"
+          scope: "@bookingsystemadvancedorg"
 
       - name: Install
         if: steps.setup.outputs.ready == 'true'

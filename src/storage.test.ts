@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { STORAGE_REGISTRY } from '@booqy/site-kit'
+import { STORAGE_REGISTRY } from '@bookingsystemadvancedorg/site-kit'
 
 describe('index.html', () => {
   it('loads no third-party script that the storage registry (cookie page) does not mention', () => {

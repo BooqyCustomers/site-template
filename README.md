@@ -1,6 +1,6 @@
 # Restaurant site
 
-One restaurant's own website, built on [`@booqy/site-kit`](https://github.com/BookingSystemAdvancedOrg/site-kit)
+One restaurant's own website, built on [`@bookingsystemadvancedorg/site-kit`](https://github.com/BookingSystemAdvancedOrg/site-kit)
 (booking, menu, ordering and payment, catering, GDPR pages). This repo holds
 only the look: layout, pages and styles. Designed in Figma by Booqy, coded on
 top of the kit.
@@ -12,7 +12,7 @@ restaurant when the customer is created in Booqy Console. Runbook:
 ## Get started locally
 
 Once per machine: a GitHub token with `read:packages` for the kit
-(`npm login --scope=@booqy --auth-type=legacy --registry=https://npm.pkg.github.com`,
+(`npm login --scope=@bookingsystemadvancedorg --auth-type=legacy --registry=https://npm.pkg.github.com`,
 username = your GitHub user, password = the token).
 
 ```bash
@@ -38,7 +38,7 @@ elsewhere, copy `.env.example` to `.env.local`.
 
 ## The kit
 
-Update PRs for `@booqy/site-kit` come from Dependabot to `dev`. Patch
+Update PRs for `@bookingsystemadvancedorg/site-kit` come from Dependabot to `dev`. Patch
 versions merge and deploy themselves when CI is green; minor and major wait
 for a review. Put anything every site needs into the kit, not here.
 

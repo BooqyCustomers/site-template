@@ -1,5 +1,5 @@
 # Pull requests: lint, test and build. A Dependabot PR that bumps
-# @booqy/site-kit by a patch version is merged once that passes (private
+# @bookingsystemadvancedorg/site-kit by a patch version is merged once that passes (private
 # repos on GitHub Free have no auto-merge) and dev is deployed.
 name: CI
 
@@ -23,7 +23,7 @@ jobs:
           node-version: "24"
           cache: npm
           registry-url: https://npm.pkg.github.com
-          scope: "@booqy"
+          scope: "@bookingsystemadvancedorg"
       - run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +43,7 @@ jobs:
       - id: meta
         uses: dependabot/fetch-metadata@v2
       - name: Merge a site-kit patch and deploy dev
-        if: steps.meta.outputs.dependency-names == '@booqy/site-kit' && steps.meta.outputs.update-type == 'version-update:semver-patch'
+        if: steps.meta.outputs.dependency-names == '@bookingsystemadvancedorg/site-kit' && steps.meta.outputs.update-type == 'version-update:semver-patch'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.pull_request.html_url }}

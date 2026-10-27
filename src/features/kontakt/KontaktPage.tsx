@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
-import { useLocationInfo, useSite } from '@booqy/site-kit'
+import { useLocationInfo, useSite } from '@bookingsystemadvancedorg/site-kit'
 
 const SUBJECT_OPTIONS = [
   { value: 'rekommendation', label: 'Rekommendation' },

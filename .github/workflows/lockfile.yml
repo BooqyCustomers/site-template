@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: "24"
           registry-url: https://npm.pkg.github.com
-          scope: "@booqy"
+          scope: "@bookingsystemadvancedorg"
       - run: npm install --package-lock-only --no-audit --no-fund
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

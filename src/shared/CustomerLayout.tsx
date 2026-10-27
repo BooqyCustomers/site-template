@@ -8,7 +8,7 @@ import {
   trackPage,
   useLocationInfo,
   useSite,
-} from '@booqy/site-kit'
+} from '@bookingsystemadvancedorg/site-kit'
 import { BooqyWordmark } from './BooqyWordmark'
 
 /**

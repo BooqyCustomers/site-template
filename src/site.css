@@ -1,6 +1,6 @@
 /* Sajtens skal: headerbandet, mobilmenyn, startsidans hero, footern och
    kontaktsidan. Allt som delas med site-kit:s flöden (meny, boka, beställ,
-   catering, juridik) ligger i @booqy/site-kit/styles.css, som laddas före
+   catering, juridik) ligger i @bookingsystemadvancedorg/site-kit/styles.css, som laddas före
    den här filen. Tokens (färger, typsnitt, hörn, avstånd) är CSS-variabler
    därifrån; skriv över dem här för en egen look. */
 

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Menu, openStatus, useSite } from '@booqy/site-kit'
+import { Menu, openStatus, useSite } from '@bookingsystemadvancedorg/site-kit'
 
 /**
  * Startsidan: restaurangen (namn, tagline, öppet just nu, foto eller

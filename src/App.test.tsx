@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { SiteProvider } from '@booqy/site-kit'
-import { json, siteConfig } from '@booqy/site-kit/testing'
+import { SiteProvider } from '@bookingsystemadvancedorg/site-kit'
+import { json, siteConfig } from '@bookingsystemadvancedorg/site-kit/testing'
 import App from './App'
 
 function renderSite() {

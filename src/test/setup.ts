@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/vitest'
-import { configureSiteKit } from '@booqy/site-kit'
+import { configureSiteKit } from '@bookingsystemadvancedorg/site-kit'
 
 configureSiteKit({ apiBaseUrl: 'https://api.test' })
 
