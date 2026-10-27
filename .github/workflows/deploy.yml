@@ -1,0 +1,142 @@
+# Deploys this restaurant's site: dev -> the dev account (<slug>.dev.booqy.se),
+# main -> the prod account (the restaurant's own domain). Every value comes
+# from repo variables that Booqy writes when the customer is created in that
+# environment's console (DEV_* / PROD_*); none of them is a secret.
+#
+# Rollback: Actions -> Deploy -> Run workflow on the branch (dev or main),
+# with the full SHA of an older commit on it. Seconds; the bucket also keeps
+# the previous build for 30 days.
+name: Deploy
+
+on:
+  push:
+    branches: [dev, main]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Rollback: full SHA of an older commit on this branch (empty: the branch head)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref_name == 'dev' || github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    env:
+      BOOQY_ENV: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+      ROLE_ARN: ${{ github.ref_name == 'main' && vars.PROD_AWS_ROLE_ARN || vars.DEV_AWS_ROLE_ARN }}
+      BUCKET: ${{ github.ref_name == 'main' && vars.PROD_SITE_BUCKET || vars.DEV_SITE_BUCKET }}
+      TENANT_ID: ${{ github.ref_name == 'main' && vars.PROD_TENANT_ID || vars.DEV_TENANT_ID }}
+      API_BASE_URL: ${{ github.ref_name == 'main' && vars.PROD_API_BASE_URL || vars.DEV_API_BASE_URL }}
+    steps:
+      - name: This environment is set up
+        id: setup
+        run: |
+          if [ -z "$ROLE_ARN" ] || [ -z "$BUCKET" ] || [ -z "$TENANT_ID" ]; then
+            echo "::notice::No $BOOQY_ENV customer for this repo yet (created in Booqy Console) - nothing to deploy."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.setup.outputs.ready == 'true'
+        with:
+          ref: ${{ inputs.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: A rollback deploys only a commit on this branch
+        if: steps.setup.outputs.ready == 'true' && inputs.sha != ''
+        env:
+          SHA: ${{ inputs.sha }}
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor "$SHA" "origin/$GITHUB_REF_NAME" || { echo "::error::$SHA is not on $GITHUB_REF_NAME"; exit 1; }
+          echo "deploying $(git log -1 --format='%h %s (%ci)' "$SHA")"
+
+      # GitHub Free has no branch protection on private repos, so the
+      # go-live rule lives here: prod only with the restaurant's own domain
+      # attached and verified in Booqy.
+      - name: Go-live gate (prod needs the restaurant's own domain)
+        if: steps.setup.outputs.ready == 'true' && env.BOOQY_ENV == 'prod'
+        run: |
+          set -euo pipefail
+          status=$(curl -s -o site-config.json -w '%{http_code}' "$API_BASE_URL/site-config?tenantId=$TENANT_ID")
+          [ "$status" = 200 ] || { echo "::error::The restaurant is not active in prod (site-config answered $status)."; exit 1; }
+          domain=$(jq -r '.tenant.domain // empty' site-config.json)
+          [ -n "$domain" ] || { echo "::error::No own domain attached and verified for this restaurant in prod yet (Booqy Console, Domains). Not deploying."; exit 1; }
+          echo "DOMAIN=$domain" >> "$GITHUB_ENV"
+          echo "going live on https://$domain"
+
+      - uses: actions/setup-node@v4
+        if: steps.setup.outputs.ready == 'true'
+        with:
+          node-version: "24"
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: "@booqy"
+
+      - name: Install
+        if: steps.setup.outputs.ready == 'true'
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint, test, build
+        if: steps.setup.outputs.ready == 'true'
+        run: |
+          npm run lint
+          npm test
+          npm run build
+          test -f dist/index.html
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        if: steps.setup.outputs.ready == 'true'
+        with:
+          role-to-assume: ${{ env.ROLE_ARN }}
+          aws-region: eu-north-1
+
+      # Proof on every deploy that this repo's role can't touch another
+      # restaurant's site: the write must be refused.
+      - name: Isolation check (another folder must be refused)
+        if: steps.setup.outputs.ready == 'true'
+        run: |
+          if echo probe | aws s3 cp - "s3://$BUCKET/sites/isolation-probe-$TENANT_ID/probe.txt" 2> probe.err; then
+            aws s3 rm "s3://$BUCKET/sites/isolation-probe-$TENANT_ID/probe.txt" || true
+            echo "::error::This deploy role could write outside sites/$TENANT_ID/ - stop and tell Booqy."; exit 1
+          fi
+          grep -q AccessDenied probe.err || { cat probe.err; echo "::error::expected AccessDenied"; exit 1; }
+          echo "refused as it should be"
+
+      - name: Deploy to sites/<tenantId>/
+        if: steps.setup.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          # Hashed files: cached for a year. index.html: never cached, so a
+          # deploy is live at once without a CloudFront invalidation.
+          aws s3 sync dist/ "s3://$BUCKET/sites/$TENANT_ID/" --delete \
+            --cache-control "public,max-age=31536000,immutable" --exclude index.html
+          aws s3 cp dist/index.html "s3://$BUCKET/sites/$TENANT_ID/index.html" \
+            --cache-control "no-cache,no-store,must-revalidate"
+
+      - name: The site answers
+        if: steps.setup.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          url=${DOMAIN:+https://$DOMAIN}
+          url=${url:-$(jq -r ".environments.$BOOQY_ENV.previewUrl // empty" booqy.json)}
+          [ -n "$url" ] || { echo "::notice::No address to check yet."; exit 0; }
+          for i in 1 2 3 4 5 6; do
+            if curl -fsS "$url/" | grep -q '<div id="root">'; then echo "live on $url"; exit 0; fi
+            sleep 10
+          done
+          echo "::error::$url does not serve the site"; exit 1
