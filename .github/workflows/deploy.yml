@@ -29,7 +29,9 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.ref_name == 'dev' || github.ref_name == 'main'
+    # Skipped (shown as skipped, not as a deploy) until Booqy has set this
+    # branch's environment up.
+    if: (github.ref_name == 'dev' && vars.DEV_AWS_ROLE_ARN != '') || (github.ref_name == 'main' && vars.PROD_AWS_ROLE_ARN != '')
     runs-on: ubuntu-latest
     env:
       BOOQY_ENV: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
