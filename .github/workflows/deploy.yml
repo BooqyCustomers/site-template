@@ -1,5 +1,6 @@
 # Deploys this restaurant's site: dev -> the dev account (<slug>.dev.booqy.se),
-# main -> the prod account (the restaurant's own domain). Every value comes
+# main -> the prod account (<slug>.booqy.se, and the restaurant's own domain
+# once it is attached and verified; never required). Every value comes
 # from repo variables that Booqy writes when the customer is created in that
 # environment's console (DEV_* / PROD_*); none of them is a secret.
 #
@@ -65,19 +66,22 @@ jobs:
           git merge-base --is-ancestor "$SHA" "origin/$GITHUB_REF_NAME" || { echo "::error::$SHA is not on $GITHUB_REF_NAME"; exit 1; }
           echo "deploying $(git log -1 --format='%h %s (%ci)' "$SHA")"
 
-      # GitHub Free has no branch protection on private repos, so the
-      # go-live rule lives here: prod only with the restaurant's own domain
-      # attached and verified in Booqy.
-      - name: Go-live gate (prod needs the restaurant's own domain)
+      # Prod deploys only for a restaurant that is active in Booqy. An own
+      # domain is optional: without one (or before it is verified) the site
+      # is live on its slug address (booqy.json previewUrl, <slug>.booqy.se).
+      - name: Restaurant is active (own domain when verified, else the slug address)
         if: steps.setup.outputs.ready == 'true' && env.BOOQY_ENV == 'prod'
         run: |
           set -euo pipefail
           status=$(curl -s -o site-config.json -w '%{http_code}' "$API_BASE_URL/site-config?tenantId=$TENANT_ID")
           [ "$status" = 200 ] || { echo "::error::The restaurant is not active in prod (site-config answered $status)."; exit 1; }
           domain=$(jq -r '.tenant.domain // empty' site-config.json)
-          [ -n "$domain" ] || { echo "::error::No own domain attached and verified for this restaurant in prod yet (Booqy Console, Domains). Not deploying."; exit 1; }
-          echo "DOMAIN=$domain" >> "$GITHUB_ENV"
-          echo "going live on https://$domain"
+          if [ -n "$domain" ]; then
+            echo "DOMAIN=$domain" >> "$GITHUB_ENV"
+            echo "going live on https://$domain"
+          else
+            echo "::notice::No own domain attached yet: going live on the slug address only."
+          fi
 
       - uses: actions/setup-node@v4
         if: steps.setup.outputs.ready == 'true'
