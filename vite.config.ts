@@ -6,7 +6,8 @@ import react from '@vitejs/plugin-react'
 // booqy.json skrivs av Booqy (site-repo) när kunden skapas i Booqy Console:
 // en sektion per miljö med restaurangens tenantId, API:t och de publika
 // nycklarna. Inget i den är hemligt. BOOQY_ENV väljer sektion: dev (standard,
-// också för npm run dev) eller prod (deployen från main). Ett värde i
+// också för npm run dev), prod (deployen från main i BooqyCustomers) eller
+// test (deployen från main för en testkund i BooqyCustomersDev). Ett värde i
 // .env.local går före booqy.json, t.ex. VITE_API_BASE_URL.
 type EnvironmentConfig = {
   tenantId?: string
@@ -26,14 +27,15 @@ function readBooqyJson(): BooqyJson {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const booqyEnv = process.env.BOOQY_ENV === 'prod' ? 'prod' : 'dev'
+  const requested = process.env.BOOQY_ENV
+  const booqyEnv: 'prod' | 'test' | 'dev' = requested === 'prod' || requested === 'test' ? requested : 'dev'
   const booqy = readBooqyJson()
   const site = booqy.environments?.[booqyEnv] ?? {}
   const apiTarget = env.VITE_API_BASE_URL || site.apiBaseUrl || ''
   const menuImageBaseUrl = env.VITE_MENU_IMAGE_BASE_URL || site.menuImageBaseUrl || ''
-  // Slug-uppslagningen fungerar bara utanför prod (localhost, förhandsvisningen).
+  // Slug-uppslagningen fungerar bara utanför prod (localhost, förhandsvisningen, testsajterna).
   const devTenantSlug = booqyEnv === 'prod' ? '' : env.VITE_DEV_TENANT_SLUG || booqy.slug || ''
-  // Restaurangens egen domän (prod), för canonical-länken.
+  // Restaurangens egen domän (prod), för canonical-länken. Testsajter har ingen.
   const ownDomain = booqy.environments?.prod?.domain ?? ''
   // I dev proxas API-anropen genom dev-servern (samma origin) i stället för
   // att webbläsaren pratar direkt med API Gateway.
@@ -56,8 +58,9 @@ export default defineConfig(({ mode }) => {
         },
       },
       {
-        // Förhandsvisningen (<slug>.dev.booqy.se) ska aldrig indexeras; bara
-        // restaurangens egen domän (canonical, sätts per sida i main.tsx).
+        // Förhandsvisningen (<slug>.dev.booqy.se) och testsajterna
+        // (<slug>.test.booqy.se, <slug>.test-dev.booqy.se) ska aldrig indexeras;
+        // bara restaurangens egen domän (canonical, sätts per sida i main.tsx).
         name: 'noindex-outside-prod',
         transformIndexHtml(html) {
           if (booqyEnv === 'prod') return html

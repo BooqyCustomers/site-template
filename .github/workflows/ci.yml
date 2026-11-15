@@ -15,7 +15,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     env:
-      BOOQY_ENV: ${{ github.base_ref == 'main' && 'prod' || 'dev' }}
+      # main: prod (BooqyCustomers) or test (BooqyCustomersDev, SANDBOX_MAIN_*)
+      BOOQY_ENV: ${{ github.base_ref != 'main' && 'dev' || (vars.PROD_AWS_ROLE_ARN == '' && vars.SANDBOX_MAIN_AWS_ROLE_ARN != '' && 'test' || 'prod') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
