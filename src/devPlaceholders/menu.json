@@ -1,0 +1,138 @@
+{
+  "items": [
+    {
+      "menuItemId": "exempel-001",
+      "name": "Toast Skagen",
+      "description": "Handskalade räkor, dill, citron och löjrom på smörstekt bröd.",
+      "price": 145,
+      "category": "forratter",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-002",
+      "name": "Burrata",
+      "description": "Krämig burrata med tomater, basilika och olivolja.",
+      "price": 135,
+      "category": "forratter",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-003",
+      "name": "Rödbetscarpaccio (vegetarisk)",
+      "description": "Tunt skivade rödbetor, chèvre, valnötter och honung.",
+      "price": 115,
+      "category": "forratter",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-004",
+      "name": "Grillad entrecôte",
+      "description": "Rödvinssky, rostad potatis och säsongens grönsaker.",
+      "price": 295,
+      "category": "varmratter",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-005",
+      "name": "Halstrad torskrygg",
+      "description": "Brynt smör, pepparrot, ägg och färskpotatis.",
+      "price": 265,
+      "category": "varmratter",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-006",
+      "name": "Svampristotto (vegetarisk)",
+      "description": "Karl Johan-svamp, parmesan och tryffelolja.",
+      "price": 215,
+      "category": "varmratter",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-007",
+      "name": "Wallenbergare",
+      "description": "Potatispuré, gröna ärtor, rårörda lingon och skirat smör.",
+      "price": 235,
+      "category": "varmratter",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-008",
+      "name": "Pannbiff med lök",
+      "description": "Gräddsås, kokt potatis och pressgurka.\nIngår sallad, bröd och kaffe.",
+      "price": 125,
+      "category": "lunch",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-009",
+      "name": "Ugnsbakad lax",
+      "description": "Hollandaise och dillpotatis.",
+      "price": 125,
+      "category": "lunch",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-010",
+      "name": "Veckans vegetariska",
+      "description": "Fråga personalen om dagens rätt.",
+      "price": 115,
+      "category": "lunch",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-011",
+      "name": "Crème brûlée",
+      "description": "Vanilj från Madagaskar.",
+      "price": 95,
+      "category": "desserter",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-012",
+      "name": "Chokladfondant",
+      "description": "Med vaniljglass och bär.",
+      "price": 105,
+      "category": "desserter",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-013",
+      "name": "Aperol spritz",
+      "description": "Prosecco, aperol, sodavatten och apelsin.",
+      "price": 125,
+      "category": "drinkar",
+      "imageKey": null
+    },
+    {
+      "menuItemId": "exempel-014",
+      "name": "Alkoholfri mojito",
+      "description": "Lime, mynta, rörsocker och sodavatten.",
+      "price": 85,
+      "category": "drinkar",
+      "imageKey": null
+    }
+  ],
+  "categories": [
+    {
+      "categoryId": "forratter",
+      "name": "Förrätter"
+    },
+    {
+      "categoryId": "varmratter",
+      "name": "Varmrätter"
+    },
+    {
+      "categoryId": "lunch",
+      "name": "Dagens lunch: Veckans rätter"
+    },
+    {
+      "categoryId": "desserter",
+      "name": "Desserter"
+    },
+    {
+      "categoryId": "drinkar",
+      "name": "Drinkar"
+    }
+  ]
+}
