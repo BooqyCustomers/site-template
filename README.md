@@ -64,25 +64,15 @@ elsewhere, copy `.env.example` to `.env.local`.
 
 ## The dev twin: whose data you see
 
-`dev` and `npm run dev` never talk to the real restaurant. They talk to the
-restaurant's **dev twin**: a copy of the restaurant in Booqy's dev
-environment with the same name and slug, owned by Booqy and set up with test
-data in every Kom igång step (location, opening hours and special days,
-booking rules, card guarantee, online ordering, the menu with lunch and
-drinks, a published table layout, a simulated printer, staff, the phone
-assistant). Payments there are Stripe test mode: pay with `4242 4242 4242 4242`.
+`dev` and `npm run dev` talk to the restaurant's **dev twin**, Booqy's fake
+copy of the restaurant in the dev environment, never to the real one. The
+rules (what the twin holds, what is copied from production and what never
+is, test customers, collisions) are in [`docs/DATA-RULES.md`](docs/DATA-RULES.md).
 
-- **dev = the twin, prod = the real restaurant.** Only the twin's name, slug
-  and plan come from production; none of the restaurant's own details do.
-- **Change the twin, never the customer.** Need other data to build against
-  (a closed day, more dishes, a bigger party)? Sign in to the dev Booqy
-  Admin (`https://restaurang.dev.booqy.se`) with the twin's owner login and
-  change it there. Ask Booqy for that login; it is a Booqy team address
-  (`dev+<slug>@booqy.se`), never the restaurant's.
-- The restaurant sets up its real data in production Booqy Admin. Nothing
-  you do in dev reaches it.
-- Booqy refreshes the twin from the dev Booqy Console (customer, Overview,
-  Dev twin, Refresh): it adds what is missing and keeps your changes.
+- Need other data to build against? Change the twin in the dev Booqy Admin
+  (`https://restaurang.dev.booqy.se`) with its owner login
+  (`aws+<slug>@ithjalparna.se`, ask Booqy), never the real restaurant.
+- Payments in dev are Stripe test mode: pay with `4242 4242 4242 4242`.
 
 ## Example data in dev
 
