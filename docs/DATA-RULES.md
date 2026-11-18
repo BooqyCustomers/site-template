@@ -54,12 +54,12 @@ slug in Booqy's dev environment.
   location, opening hours, table layout, menu, card guarantee on a Stripe
   test-mode account, ordering, simulated printers, phone settings. A
   "Create or refresh dev twin" button in Booqy Console Dev does the same for
-  older customers. **[building]** Until it lands, create the twin by hand in
-  Booqy Console Dev with the same slug and fill it in Booqy Admin Dev.
+  older customers. **[live]**
 - **Public content follows the real restaurant.** When the restaurant has
   finished its setup in production (see the order below), what a guest can
   see on the website is copied from production to the twin: menu, dishes and
-  prices, opening hours, table layout, photos and texts. **[building]**
+  prices, opening hours, table layout, photos and texts. Booqy Console Dev
+  can also copy it on demand ("Copy public content now"). **[live]**
 - **Never copied:** anything secret or anything that costs money or reaches a
   person: Stripe accounts and keys, payments, bookings, orders, guests and
   their details, staff and their logins, phone and SMS numbers, email
@@ -91,7 +91,7 @@ the README; code in `src/devPlaceholders/`). **[live]**
 - A **test customer** is created in Booqy Console Dev. It lives only in dev:
   no production restaurant, no twin, repo in `BooqyCustomersDev` (sites on
   `<slug>.test.booqy.se` and `<slug>.test-dev.booqy.se`). **[live]**
-- **No collisions [building]:**
+- **No collisions [live]:**
   - A twin is marked "Twin of prod" and a test customer "Dev test" in Booqy
     Console Dev.
   - If a dev test customer already uses a slug, the twin is never merged
@@ -105,7 +105,7 @@ the README; code in `src/devPlaceholders/`). **[live]**
 ## Order of work for every new customer
 
 1. Booqy creates the customer in production Booqy Console. The repo
-   `site-<slug>` and the twin are created. **[live: repo; building: twin]**
+   `site-<slug>` and the twin are created. **[live]**
 2. The restaurant logs into production Booqy Admin and works through every
    Kom igång step (9 today, more later), completing or skipping each one.
 3. When every step is completed or skipped, Booqy Console notifies the Booqy
