@@ -98,6 +98,18 @@ Admin, then goes live by itself, with no deploy.
 - The browser console says `booqy-dev-placeholder-data` when something on
   the page is an example.
 
+## Tests
+
+- `npm test`, `npm run lint`, `npm run build`: unit tests, lint, build (CI on
+  every pull request).
+- `npm run test:site`: the full suite against the deployed dev site and the
+  dev API (API integration, end-to-end flows, UI at 390/768/1024/1440 with
+  visual baselines and axe, UX checks, Core Web Vitals). It runs after every
+  dev deploy and gates the pull request to `main`. See `e2e/README.md`, and
+  `docs/TEST-GATE.md` for the workflows. In this template there is no dev
+  restaurant yet, so every test skips itself; a new site edits
+  `e2e/site.config.ts` when its pages differ.
+
 ## The kit
 
 Update PRs for `@bookingsystemadvancedorg/site-kit` come from Dependabot to `dev`. Patch

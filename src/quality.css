@@ -1,0 +1,40 @@
+/*
+ * Det e2e-testerna kräver av varje sajt (e2e/specs/ux.spec.ts, ui.spec.ts):
+ * pekytor på minst 44 x 44 px på pekskärmar, synligt fokus i formulären och
+ * inga hopp medan sidan laddas. Samma utseende; bara större klickytor.
+ */
+
+@media (max-width: 1023px) {
+  .site-header-brand,
+  .open-chip,
+  .chip-rail .chip,
+  .bq-btn--sm,
+  .btn-small {
+    min-height: 44px;
+  }
+
+  .site-header-burger,
+  .site-header-theme {
+    flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .site-footer-legal a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
+/* Fokus i kontaktformuläret syns (inte bara en mörkare kant). */
+.contact-form-field input:focus-visible,
+.contact-form-field select:focus-visible,
+.contact-form-field textarea:focus-visible {
+  box-shadow: 0 0 0 3px var(--focus);
+}
+
+/* Sidans innehåll tar minst en skärmhöjd: sidfoten hoppar inte när sidan laddas in (CLS). */
+.site-main {
+  min-height: 100svh;
+}

@@ -9,6 +9,7 @@ import { Canonical } from './shared/Canonical'
 import '@bookingsystemadvancedorg/site-kit/styles.css'
 import './index.css'
 import './site.css'
+import './quality.css'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined
 

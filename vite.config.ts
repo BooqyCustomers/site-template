@@ -61,6 +61,16 @@ export default defineConfig(({ mode }) => {
         },
       },
       {
+        // Vilken commit sajten byggdes från (GitHub Actions sätter GITHUB_SHA).
+        // Testgaten för PR:en till main väntar tills dev visar PR:ens commit
+        // (docs/TEST-GATE.md). Inget hemligt: commiten finns i det publika repot.
+        name: 'build-commit',
+        transformIndexHtml(html) {
+          const sha = process.env.GITHUB_SHA ?? 'local'
+          return html.replace('</title>', `</title>\n    <meta name="booqy-build" content="${sha}" />`)
+        },
+      },
+      {
         // Förhandsvisningen (<slug>.dev.booqy.se) och testsajterna
         // (<slug>.test.booqy.se, <slug>.test-dev.booqy.se) ska aldrig indexeras;
         // bara restaurangens egen domän (canonical, sätts per sida i main.tsx).

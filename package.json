@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:site": "npm --prefix e2e ci --no-audit --no-fund && npm --prefix e2e exec -- playwright install chromium && npm --prefix e2e test"
   },
   "dependencies": {
     "@bookingsystemadvancedorg/site-kit": "0.3.0",
