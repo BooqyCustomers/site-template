@@ -62,6 +62,28 @@ elsewhere, copy `.env.example` to `.env.local`.
   an older commit on it.
 - Only `dev` and `main`; no other long-lived branches.
 
+## The dev twin: whose data you see
+
+`dev` and `npm run dev` never talk to the real restaurant. They talk to the
+restaurant's **dev twin**: a copy of the restaurant in Booqy's dev
+environment with the same name and slug, owned by Booqy and set up with test
+data in every Kom igång step (location, opening hours and special days,
+booking rules, card guarantee, online ordering, the menu with lunch and
+drinks, a published table layout, a simulated printer, staff, the phone
+assistant). Payments there are Stripe test mode: pay with `4242 4242 4242 4242`.
+
+- **dev = the twin, prod = the real restaurant.** Only the twin's name, slug
+  and plan come from production; none of the restaurant's own details do.
+- **Change the twin, never the customer.** Need other data to build against
+  (a closed day, more dishes, a bigger party)? Sign in to the dev Booqy
+  Admin (`https://restaurang.dev.booqy.se`) with the twin's owner login and
+  change it there. Ask Booqy for that login; it is a Booqy team address
+  (`dev+<slug>@booqy.se`), never the restaurant's.
+- The restaurant sets up its real data in production Booqy Admin. Nothing
+  you do in dev reaches it.
+- Booqy refreshes the twin from the dev Booqy Console (customer, Overview,
+  Dev twin, Refresh): it adds what is missing and keeps your changes.
+
 ## Example data in dev
 
 Rule for every restaurant site: until the restaurant has entered its own data
