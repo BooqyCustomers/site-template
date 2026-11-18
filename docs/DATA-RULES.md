@@ -114,12 +114,14 @@ the README; code in `src/devPlaceholders/`). **[live]**
 4. Booqy builds the site on `dev` and checks it on `<slug>.dev.booqy.se`.
    Every push to `dev` deploys there and runs the full test suite against it:
    API and integration tests, end-to-end flows, UI tests at 390, 768, 1024
-   and 1440 px, accessibility and UX checks. **[building]** Tests use the
+   and 1440 px, accessibility and UX checks. **[live: suite in `e2e/`; runs
+   by itself once the `docs/TEST-GATE.md` workflows are in]** Tests use the
    twin and Stripe test mode only, mark what they create as test data and
    delete it afterwards.
 5. A pull request `dev` to `main` runs the same full suite as a required
    check. Anything red is fixed on `dev` and the pull request runs again.
-   Only a green pull request is merged. **[building]**
+   Only a green pull request is merged. **[live: suite; required check once
+   the `docs/TEST-GATE.md` workflows and branch protection are in]**
 6. The merge deploys to production. The site shows the restaurant's real data.
 
 ## Checklist before every merge to main
