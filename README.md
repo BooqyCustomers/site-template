@@ -19,6 +19,10 @@ Booqy gives a developer write access to that one repo (an invitation on
 GitHub); developers are never members of either organisation. Runbook:
 `infrastructure/docs/CUSTOMER-SITE-RUNBOOK.md`.
 
+**Read [`docs/DATA-RULES.md`](docs/DATA-RULES.md) first:** `dev` only ever
+uses fake data (the restaurant's dev twin and example data, Stripe test
+mode); `main` only ever uses the restaurant's real data from production.
+
 ## Get started locally
 
 Once per machine: a GitHub token with `read:packages` for the kit (the
