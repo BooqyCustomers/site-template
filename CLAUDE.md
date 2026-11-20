@@ -45,5 +45,10 @@ Booqy is a multi-tenant restaurant SaaS (booking, ordering, catering, marketing)
 - New sites need site-kit 0.3.0 or later: guest form posts go through AWS WAF via `/api/*` on the site's own domain.
 - Guest links use the restaurant's own domain once it is live (`<slug>.booqy.se` then 301-redirects to it).
 
+**Motion and UX (skill `ux-motion`):**
+- `.claude/skills/ux-motion/SKILL.md` holds 20 motion and UX principles with exact timings and easings. Claude Code loads it automatically; use it for every change that moves (hover, press, menus, sheets, booking steps, success moments) and for reviews.
+- Use motion where it helps the guest (feedback, orientation, the booking confirmation as the peak moment), not everywhere. Always respect `prefers-reduced-motion`.
+- Shared motion that every site needs belongs in site-kit, not in one site.
+
 **Temporary overrides to remove later:**
 - Checkbox visibility (2026-11-19). site-kit up to 0.4.0 drew `.booking-check` checkboxes with CSS variables no theme defines, so the boxes were invisible until hover. Fixed in site-kit `dev` (commit `fa61a10`, not published yet). Until a published site-kit release contains it, each site carries an override (file named below). When the site bumps to that release, delete the override in the same PR and check that the boxes still show.
