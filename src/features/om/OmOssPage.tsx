@@ -6,11 +6,11 @@ export default function OmOssPage() {
   const about = config.tenant.branding.about?.trim()
   return (
     <section className="page-hero page-prose">
-      <h1>Om {config.tenant.name}</h1>
+      <h1>{`Om ${config.tenant.name}`}</h1>
       {about ? (
         about.split(/\n{2,}/).map((p, i) => <p key={i}>{p}</p>)
       ) : (
-        <p>Välkommen till {config.tenant.name}.</p>
+        <p>{`Välkommen till ${config.tenant.name}.`}</p>
       )}
     </section>
   )

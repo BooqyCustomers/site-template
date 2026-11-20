@@ -42,7 +42,7 @@ export default function KontaktPage() {
         <p className="hero-sub">Skicka ett meddelande till oss. Vi återkommer så snart vi kan.</p>
         {(phone || address) && (
           <p className="hero-sub">
-            {address}
+            {address && <span translate="no">{address}</span>}
             {address && phone && ' · '}
             {phone && <PhoneLink phone={phone} />}
           </p>

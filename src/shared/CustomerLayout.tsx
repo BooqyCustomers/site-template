@@ -12,6 +12,7 @@ import {
   useSite,
 } from '@bookingsystemadvancedorg/site-kit'
 import { BooqyWordmark } from './BooqyWordmark'
+import { LanguagePicker } from './lang'
 
 /**
  * Kundsajtens skal: ett band i restaurangens färg med namn/logga, menyn,
@@ -116,7 +117,7 @@ export function CustomerLayout() {
             {tenant.branding.logoUrl ? (
               <img src={tenant.branding.logoUrl} alt="" width={44} height={44} />
             ) : null}
-            <span className="site-header-wordmark">{tenant.name}</span>
+            <span className="site-header-wordmark" translate="no">{tenant.name}</span>
           </Link>
 
           <nav className="site-header-nav" aria-label="Huvudmeny">
@@ -140,6 +141,8 @@ export function CustomerLayout() {
             <span>{status.text}</span>
             <span className="sr-only"> - visa öppettider</span>
           </button>
+
+          {LanguagePicker && <LanguagePicker className="site-header-lang" />}
 
           <ThemeToggle className="site-header-theme" />
 
@@ -227,7 +230,7 @@ export function CustomerLayout() {
       <footer className="site-footer">
         <div className="footer-cols">
           <div className="footer-brand">
-            <h2>{location.name}</h2>
+            <h2 translate="no">{location.name}</h2>
             {tenant.branding.tagline && <p>{tenant.branding.tagline}</p>}
           </div>
           <div>
@@ -243,22 +246,22 @@ export function CustomerLayout() {
           </div>
           <div>
             <h3>Adress &amp; kontakt</h3>
-            {location.address && <p>{location.address}</p>}
+            {location.address && <p translate="no">{location.address}</p>}
             {location.phone && <p><PhoneLink phone={location.phone} /></p>}
-            {location.email && <p><a href={`mailto:${location.email}`}>{location.email}</a></p>}
+            {location.email && <p><a href={`mailto:${location.email}`} translate="no" dir="ltr">{location.email}</a></p>}
           </div>
         </div>
         <div className="site-footer-main">
           <p className="site-footer-rights">
-            © {new Date().getFullYear()} {legal.legalName}
-            {legal.orgNumber ? ` · org.nr ${legal.orgNumber}` : ''}
+            © {new Date().getFullYear()} <span translate="no">{legal.legalName}</span>
+            {legal.orgNumber ? <> · org.nr <span translate="no">{legal.orgNumber}</span></> : null}
           </p>
           <nav className="site-footer-legal" aria-label="Juridiskt">
             <Link to="/integritetspolicy">Integritetspolicy</Link>
             <Link to="/cookies">Cookies</Link>
             {tenant.features.reservations && <Link to="/bokningsvillkor">Bokningsvillkor</Link>}
           </nav>
-          <p className="site-footer-credit">Drivs av <BooqyWordmark className="site-footer-booqy" /></p>
+          <p className="site-footer-credit">Drivs av <span translate="no"><BooqyWordmark className="site-footer-booqy" /></span></p>
         </div>
       </footer>
     </div>
