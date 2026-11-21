@@ -15,8 +15,15 @@ export const site = {
   parkingPath: null as string | null,
   /** Light and dark mode with a toggle (booqy-theme): the template has both. */
   themes: ['light', 'dark'] as ('light' | 'dark')[],
-  /** The language switch, when the site has one (the template is Swedish only). */
-  language: null as { trigger: string; option: string; expectText: RegExp; expectLang: string } | null,
+  /** The language switch: site-kit's picker in the top bar (sv, en, es, ar, fa). */
+  language: {
+    /** The branded dropdown's trigger. */
+    trigger: '.site-header-lang button',
+    /** Option to pick, and text that then shows in the header. */
+    option: 'English',
+    expectText: /Contact/,
+    expectLang: 'en',
+  } as { trigger: string; option: string; expectText: RegExp; expectLang: string } | null,
   /** Parts of pages that change from run to run (masked in screenshots). */
   visualMasks: [] as string[],
   /** Decorative layers hidden in screenshots (big photos that say nothing about the layout). */

@@ -12,7 +12,7 @@
     "test:site": "npm --prefix e2e ci --no-audit --no-fund && npm --prefix e2e exec -- playwright install chromium && npm --prefix e2e test"
   },
   "dependencies": {
-    "@bookingsystemadvancedorg/site-kit": "0.3.0",
+    "@bookingsystemadvancedorg/site-kit": "0.5.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.2"

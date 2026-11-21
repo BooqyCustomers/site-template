@@ -1167,8 +1167,9 @@
 }
 
 /* Telefon: namn, öppet-chip, språk, ljus/mörkt och hamburgare ryms i en rad.
-   Språkknappen visar bara flaggan, chippet blir kompaktare och kortas med
-   ellips i stället för att knuffa bort namnet. */
+   Språkknappen visar bara flaggan. Chippet blir smalare (smalare typsnitt)
+   och bryter texten på två rader när den inte ryms, så att tiden aldrig
+   klipps bort, på alla fem språk. */
 @media (max-width: 700px) {
   .site-header-brand {
     flex: 0 0 auto;
@@ -1178,15 +1179,24 @@
   .open-chip {
     flex: 0 1 auto;
     min-width: 0;
-    padding: 0 9px;
+    padding: 0 8px;
     gap: 6px;
     font-size: 0.74rem;
+    font-stretch: 75%;
+    letter-spacing: 0;
   }
 
   .open-chip > span:nth-of-type(2) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     min-width: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    line-height: 1.15;
+    text-align: start;
+    text-wrap: balance;
   }
 
   .site-header .site-header-lang .lang-picker-code {
@@ -1215,6 +1225,22 @@
 
   .site-header-inner:has(.site-header-lang) .site-header-wordmark {
     font-size: 1.05rem;
+  }
+}
+
+/* Under 390 px: tätare rad och språkknappen utan pil (bara flaggan, 44 px),
+   så att öppet-chippet får plats för sin tid. */
+@media (max-width: 389px) {
+  .site-header-inner:has(.site-header-lang) {
+    gap: 4px;
+  }
+
+  .site-header .site-header-lang .lang-picker-button {
+    padding-inline: 11px;
+  }
+
+  .site-header .site-header-lang .combo-chevron {
+    display: none;
   }
 }
 

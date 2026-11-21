@@ -100,7 +100,7 @@ Admin, then goes live by itself, with no deploy.
 
 ## Languages
 
-Guests can switch the whole site between Swedish (default), English, Spanish, Arabic and Persian with a flag dropdown at the right of the top bar. The translation itself (Amazon Translate, cached, through `/api/translate` behind AWS WAF) is done by site-kit, so a site only places the picker (`src/shared/lang.tsx`, `src/shared/CustomerLayout.tsx`), marks names and contact data with `translate="no"`, writes its CSS with logical properties for right-to-left, and checks the header at 390, 820 and 1440. The picker appears when the site is on a site-kit release that contains languages; on 0.3.0 nothing changes. Details and rules: `CLAUDE.md`, section "Languages".
+Guests can switch the whole site between Swedish (default), English, Spanish, Arabic and Persian with a flag dropdown at the right of the top bar. The translation itself (Amazon Translate, cached, through `/api/translate` behind AWS WAF) is done by site-kit, so a site only places the kit's `LanguagePicker` (`src/shared/CustomerLayout.tsx`, site-kit 0.5.0 or later), marks names and contact data with `translate="no"`, writes its CSS with logical properties for right-to-left, and checks the header at 360, 390, 820 and 1440. Details and rules: `CLAUDE.md`, section "Languages".
 
 ## Tests
 

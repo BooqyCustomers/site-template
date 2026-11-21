@@ -1,6 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import {
+  LanguagePicker,
   OfferCard,
   OpeningHoursModal,
   PhoneLink,
@@ -12,7 +13,6 @@ import {
   useSite,
 } from '@bookingsystemadvancedorg/site-kit'
 import { BooqyWordmark } from './BooqyWordmark'
-import { LanguagePicker } from './lang'
 
 /**
  * Kundsajtens skal: ett band i restaurangens färg med namn/logga, menyn,
@@ -142,7 +142,7 @@ export function CustomerLayout() {
             <span className="sr-only"> - visa öppettider</span>
           </button>
 
-          {LanguagePicker && <LanguagePicker className="site-header-lang" />}
+          <LanguagePicker className="site-header-lang" />
 
           <ThemeToggle className="site-header-theme" />
 
