@@ -262,26 +262,26 @@
   margin: 0 auto;
   padding: 0 0 10px;
   font-size: 0.9rem;
-  color: color-mix(in srgb, var(--on-accent) 80%, transparent);
+  /* 90 %: läsbar (minst 4,5:1) även på det ljusare bandet i mörkt läge. */
+  color: color-mix(in srgb, var(--on-accent) 90%, transparent);
 }
 
-.location-picker select {
-  min-height: 36px;
-  padding-block: 0 0;
-  padding-inline: 14px 34px;
+/* Platsväljaren är kitets Select (Booqys lista, aldrig systemets meny):
+   knappen ser ut som en pill i bandets färg. */
+.location-picker .location-picker-button {
+  --combo-chevron: var(--on-accent);
+  min-width: 0;
+  max-width: 100%;
   border: 0;
   border-radius: var(--r-pill);
-  background: color-mix(in srgb, var(--on-accent) 14%, transparent)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fdfaf6' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
-    no-repeat right 12px center / 14px;
+  background: color-mix(in srgb, var(--on-accent) 14%, transparent);
   color: var(--on-accent);
   font: 600 0.92rem var(--font);
-  appearance: none;
-  cursor: pointer;
 }
 
-.location-picker select option {
-  color: #181c1a;
+.location-picker .location-picker-button:hover:not(:disabled),
+.location-picker .location-picker-button[aria-expanded='true'] {
+  background: color-mix(in srgb, var(--on-accent) 22%, transparent);
 }
 
 .site-header-burger {
@@ -790,7 +790,7 @@
   border-color: var(--on-accent);
 }
 
-.location-picker select {
+.location-picker .location-picker-button {
   border-radius: 3px;
   font: 600 0.8rem/1 var(--mono);
 }
@@ -1281,10 +1281,6 @@ html[dir='rtl'] .mobile-drawer--open {
 
 html[dir='rtl'] .contact-form-field select {
   background-position: left 0.75rem center;
-}
-
-html[dir='rtl'] .location-picker select {
-  background-position: left 12px center;
 }
 
 /* Telefon och e-post läses vänster till höger även i höger-till-vänster-text. */

@@ -5,6 +5,7 @@ import {
   OfferCard,
   OpeningHoursModal,
   PhoneLink,
+  Select,
   SkelCard,
   ThemeToggle,
   openStatus,
@@ -163,18 +164,17 @@ export function CustomerLayout() {
 
         {config.locations.length > 1 && (
           <div className="location-picker">
-            <label htmlFor="site-location">Restaurang</label>
-            <select
+            <label id="site-location-label" htmlFor="site-location">Restaurang</label>
+            <Select
               id="site-location"
+              className="location-picker-button"
+              aria-labelledby="site-location-label"
               value={current.locationId}
-              onChange={(e) => setLocationId(e.target.value)}
-            >
-              {config.locations.map((l) => (
-                <option key={l.locationId} value={l.locationId}>
-                  {l.name || tenant.name}
-                </option>
-              ))}
-            </select>
+              onChange={setLocationId}
+              options={config.locations.map((l) => ({ value: l.locationId, label: l.name || tenant.name }))}
+              noTranslate
+              minListWidth={200}
+            />
           </div>
         )}
       </header>
