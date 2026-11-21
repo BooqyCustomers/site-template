@@ -18,12 +18,12 @@ export default function MenyPage() {
       <section className={`home-hero${tenant.branding.heroImageUrl ? ' home-hero--photo' : ''}`}>
         {tenant.branding.heroImageUrl && <img className="home-hero-img" src={tenant.branding.heroImageUrl} alt="" />}
         <div className="home-hero-body">
-          <h1>{location.name && config.locations.length > 1 ? location.name : tenant.name}</h1>
+          <h1 translate="no">{location.name && config.locations.length > 1 ? location.name : tenant.name}</h1>
           {tenant.branding.tagline && <p className="home-hero-tagline">{tenant.branding.tagline}</p>}
           <p className={`home-hero-status${status.open ? ' is-open' : ''}`}>
             <span className="open-chip-dot" aria-hidden="true" />
             {status.text}
-            {location.address ? <span className="home-hero-address"> · {location.address}</span> : null}
+            {location.address ? <span className="home-hero-address" translate="no"> · {location.address}</span> : null}
           </p>
           {(canOrder || canBook) && (
             <div className="home-hero-actions">

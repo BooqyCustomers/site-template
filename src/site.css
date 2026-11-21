@@ -101,7 +101,7 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%238e8e93' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' d='M2.5 4.5L6 8l3.5-3.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
-  padding-right: 2.25rem;
+  padding-inline-end: 2.25rem;
 }
 
 .contact-form-field select option {
@@ -186,7 +186,7 @@
 }
 
 .site-header-nav {
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 .site-header-nav ul {
@@ -267,7 +267,8 @@
 
 .location-picker select {
   min-height: 36px;
-  padding: 0 34px 0 14px;
+  padding-block: 0 0;
+  padding-inline: 14px 34px;
   border: 0;
   border-radius: var(--r-pill);
   background: color-mix(in srgb, var(--on-accent) 14%, transparent)
@@ -290,7 +291,7 @@
   gap: 5px;
   width: 44px;
   height: 44px;
-  margin-right: -8px;
+  margin-inline-end: -8px;
   padding: 0 11px;
   border: 0;
   border-radius: var(--r-pill);
@@ -324,7 +325,7 @@
   }
 
   .open-chip {
-    margin-left: auto;
+    margin-inline-start: auto;
   }
 
   .site-header-burger {
@@ -362,7 +363,7 @@
 .mobile-drawer {
   position: fixed;
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
   z-index: 50;
   width: min(86vw, 340px);
@@ -400,7 +401,7 @@
   background: transparent;
   color: var(--ink);
   font: 700 1.15rem/1 var(--font);
-  text-align: left;
+  text-align: start;
   text-decoration: none;
   cursor: pointer;
 }
@@ -677,7 +678,7 @@
 }
 
 .site-footer-credit {
-  margin-left: auto;
+  margin-inline-start: auto;
   color: rgba(253, 250, 246, 0.5);
   display: inline-flex;
   align-items: center;
@@ -695,7 +696,7 @@
   }
 
   .site-footer-credit {
-    margin-left: 0;
+    margin-inline-start: 0;
   }
 }
 
@@ -831,8 +832,8 @@
 .home-hero::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   bottom: 0;
   z-index: 2;
   height: 22px;
@@ -957,7 +958,7 @@
   border: 1.5px dashed var(--paper-line);
   background: var(--surface);
   box-shadow: none;
-  text-align: left;
+  text-align: start;
 }
 
 /* --- Boka bord: fyra kvitton, ett per steg ------------------------------ */
@@ -997,8 +998,8 @@
 .contact-form::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   bottom: 0;
   height: var(--tooth-h);
   background: conic-gradient(from -45deg at 50% 100%, var(--table) 0deg, transparent 1deg 89deg, var(--table) 90deg) 0 100% / var(--tooth) var(--tooth-h) repeat-x;
@@ -1092,11 +1093,11 @@
 
 @media (max-width: 1000px) {
   .open-chip {
-    margin-left: auto;
+    margin-inline-start: auto;
   }
 
   .site-header-theme {
-    margin-right: -4px;
+    margin-inline-end: -4px;
   }
 }
 
@@ -1104,4 +1105,200 @@
   .site-header-theme {
     width: 36px;
   }
+}
+
+/* --- Språk: väljaren i sidhuvudet och höger-till-vänster (arabiska, persiska) -------- */
+
+/* Väljaren från site-kit sitter längst till höger i toppraden, före ljus/mörkt-
+   knappen, på alla bredder (på telefon visas bara flaggan). Bandet är i
+   restaurangens färg, så knappen ärver on-accent likt ThemeToggle. */
+.site-header .site-header-lang {
+  --accent-ink: var(--on-accent);
+}
+
+.site-header .site-header-lang .lang-picker-button {
+  color: color-mix(in srgb, var(--on-accent) 86%, transparent);
+}
+
+.site-header .site-header-lang .lang-picker-button:hover:not(:disabled),
+.site-header .site-header-lang .lang-picker-button[aria-expanded='true'] {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--on-accent) 12%, transparent);
+  color: var(--on-accent);
+}
+
+.site-header .site-header-lang .lang-flag {
+  color: var(--on-accent);
+}
+
+/* Flagga och kod centreras i knappen (värdet är annars en inline-rad med radhöjd). */
+.site-header .site-header-lang .combo-value {
+  display: flex;
+  align-items: center;
+}
+
+/* Med språkväljaren i raden tar menyn mer plats (längre ord på engelska och
+   spanska): hamburgaren tar över lite tidigare och länkarna bryts aldrig. */
+.site-header-nav a {
+  white-space: nowrap;
+}
+
+.site-header-inner:has(.site-header-lang) {
+  gap: 10px;
+}
+
+.site-header-inner:has(.site-header-lang) .site-header-nav a {
+  padding: 0 10px;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 1280px) {
+  .site-header-inner:has(.site-header-lang) .site-header-nav {
+    display: none;
+  }
+
+  .site-header-inner:has(.site-header-lang) .open-chip {
+    margin-inline-start: auto;
+  }
+
+  .site-header-inner:has(.site-header-lang) .site-header-burger {
+    display: flex;
+  }
+}
+
+/* Telefon: namn, öppet-chip, språk, ljus/mörkt och hamburgare ryms i en rad.
+   Språkknappen visar bara flaggan. Chippet blir smalare (smalare typsnitt)
+   och bryter texten på två rader när den inte ryms, så att tiden aldrig
+   klipps bort, på alla fem språk. */
+@media (max-width: 700px) {
+  .site-header-brand {
+    flex: 0 0 auto;
+    max-width: 42%;
+  }
+
+  .open-chip {
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: 0 8px;
+    gap: 6px;
+    font-size: 0.74rem;
+    font-stretch: 75%;
+    letter-spacing: 0;
+  }
+
+  .open-chip > span:nth-of-type(2) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    min-width: 0;
+    overflow: hidden;
+    white-space: normal;
+    line-height: 1.15;
+    text-align: start;
+    text-wrap: balance;
+  }
+
+  .site-header .site-header-lang .lang-picker-code {
+    display: none;
+  }
+
+  .site-header .site-header-lang .lang-picker-button {
+    min-width: 44px;
+    padding-inline: 8px 22px;
+  }
+
+  .site-header .site-header-lang .combo-chevron {
+    inset-inline-end: 6px;
+  }
+
+  .site-header-burger,
+  .site-header-theme {
+    flex: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-header-inner:has(.site-header-lang) {
+    gap: 8px;
+  }
+
+  .site-header-inner:has(.site-header-lang) .site-header-wordmark {
+    font-size: 1.05rem;
+  }
+}
+
+/* Under 390 px: tätare rad och språkknappen utan pil (bara flaggan, 44 px),
+   så att öppet-chippet får plats för sin tid. */
+@media (max-width: 389px) {
+  .site-header-inner:has(.site-header-lang) {
+    gap: 4px;
+  }
+
+  .site-header .site-header-lang .lang-picker-button {
+    padding-inline: 11px;
+  }
+
+  .site-header .site-header-lang .combo-chevron {
+    display: none;
+  }
+}
+
+/* Allra smalaste telefoner: chippet är bara lampan (texten läses upp och öppettiderna öppnas som förut). */
+@media (max-width: 340px) {
+  .site-header-inner {
+    gap: 6px;
+  }
+
+  .site-header-brand {
+    flex: 0 1 auto;
+    max-width: none;
+  }
+
+  .open-chip {
+    flex: none;
+  }
+
+  .open-chip > span:nth-of-type(2) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Mobilmenyn glider in från höger i svenska/engelska/spanska och från vänster
+   i arabiska/persiska; hamburgaren och pilarna följer med via logiska egenskaper. */
+html[dir='rtl'] .mobile-drawer {
+  transform: translateX(-100%);
+}
+
+html[dir='rtl'] .mobile-drawer--open {
+  transform: none;
+}
+
+html[dir='rtl'] .contact-form-field select {
+  background-position: left 0.75rem center;
+}
+
+html[dir='rtl'] .location-picker select {
+  background-position: left 12px center;
+}
+
+/* Telefon och e-post läses vänster till höger även i höger-till-vänster-text. */
+html[dir='rtl'] .site-footer a[href^='mailto:'],
+html[dir='rtl'] .site-footer a[href^='tel:'],
+html[dir='rtl'] .page-prose a[href^='mailto:'],
+html[dir='rtl'] .page-prose a[href^='tel:'] {
+  unicode-bidi: isolate;
+  direction: ltr;
+}
+
+/* Tider läses vänster till höger och bryts inte, också i höger-till-vänster-text. */
+.footer-hours li span:last-child {
+  white-space: nowrap;
+  unicode-bidi: isolate;
+  direction: ltr;
 }

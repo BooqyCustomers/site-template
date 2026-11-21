@@ -1,0 +1,22 @@
+{
+  "name": "site-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:api": "playwright test --project=api",
+    "test:e2e": "playwright test --project=e2e-desktop --project=e2e-phone",
+    "test:ui": "playwright test --grep @ui",
+    "baselines": "playwright test --grep @visual --update-snapshots=all",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "1.63.0",
+    "@types/node": "^24.19.2",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "playwright-core": "1.63.0"
+  }
+}

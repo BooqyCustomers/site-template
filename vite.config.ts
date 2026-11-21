@@ -40,6 +40,9 @@ export default defineConfig(({ mode }) => {
   // I dev proxas API-anropen genom dev-servern (samma origin) i stället för
   // att webbläsaren pratar direkt med API Gateway.
   const useDevProxy = mode === 'development' && /^https?:/.test(apiTarget)
+  // Exempeldata (src/devPlaceholders) bara i dev-bygget, aldrig i prod eller
+  // test. VITE_BOOQY_PLACEHOLDERS=false i .env.local stänger av den lokalt.
+  const placeholders = booqyEnv === 'dev' && env.VITE_BOOQY_PLACEHOLDERS !== 'false'
 
   return {
     plugins: [
@@ -55,6 +58,16 @@ export default defineConfig(({ mode }) => {
             // ogiltig URL - behåll standardvärdet
           }
           return html.replaceAll('%API_ORIGIN%', origin)
+        },
+      },
+      {
+        // Vilken commit sajten byggdes från (GitHub Actions sätter GITHUB_SHA).
+        // Testgaten för PR:en till main väntar tills dev visar PR:ens commit
+        // (docs/TEST-GATE.md). Inget hemligt: commiten finns i det publika repot.
+        name: 'build-commit',
+        transformIndexHtml(html) {
+          const sha = process.env.GITHUB_SHA ?? 'local'
+          return html.replace('</title>', `</title>\n    <meta name="booqy-build" content="${sha}" />`)
         },
       },
       {
@@ -86,6 +99,7 @@ export default defineConfig(({ mode }) => {
             'import.meta.env.VITE_MENU_IMAGE_BASE_URL': JSON.stringify(menuImageBaseUrl),
             'import.meta.env.VITE_DEV_TENANT_SLUG': JSON.stringify(devTenantSlug),
             'import.meta.env.VITE_CANONICAL_ORIGIN': JSON.stringify(ownDomain ? `https://${ownDomain}` : ''),
+            'import.meta.env.VITE_BOOQY_PLACEHOLDERS': JSON.stringify(placeholders ? 'true' : 'false'),
           },
     test: {
       environment: 'jsdom',

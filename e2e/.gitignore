@@ -1,0 +1,8 @@
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+# Baselines from a Mac are only for local runs (npm run baselines); CI
+# compares against the Linux ones the Visual baselines workflow commits.
+specs/__screenshots__/darwin/
+specs/__screenshots__/win32/
