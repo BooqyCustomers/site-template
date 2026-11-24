@@ -5,7 +5,7 @@ This file is read automatically by Claude Code. Keep it current: when you finish
 ## State of this repo (updated 2026-11-21)
 
 - This is `site-template`: every new customer repo `site-<slug>` (BooqyCustomers and BooqyCustomersDev) is created from it, including this file. A new copy should replace this section with its own state (slug, dev and prod URLs, what is built, what is left).
-- Uses site-kit 0.5.1 (`package.json`). No temporary overrides or bridges left (see "Temporary overrides to remove later").
+- Uses site-kit 0.6.1 (`package.json`). No temporary overrides or bridges left (see "Temporary overrides to remove later").
 - `main` has 2 merge commits that `dev` lacks (PR #1 and #2 merges) and `dev` is ahead of it. The next `dev` -> `main` PR settles it; do not rewrite either branch.
 - Pushes to `dev` here do not deploy (no deploy variables on the template), and `ci.yml` runs on pull requests only, so run `npm test`, `npm run lint` and `npm run build` locally (needs a GitHub token with `read:packages`, see README).
 - Site languages: the kit's `LanguagePicker` is in the top bar (`src/shared/CustomerLayout.tsx`), header CSS compacted for the picker and right-to-left safe in `src/site.css`, `translate="no"` on brand and contact data, test in `src/shared/lang.test.tsx`, language switch on in `e2e/site.config.ts`. Section "Languages" below tells new sites how it works.
