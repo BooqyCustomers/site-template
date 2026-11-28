@@ -17,8 +17,8 @@ export const site = {
   themes: ['light', 'dark'] as ('light' | 'dark')[],
   /** The language switch: site-kit's picker in the top bar (sv, en, es, ar, fa). */
   language: {
-    /** The branded dropdown's trigger. */
-    trigger: '.site-header-lang button',
+    /** The branded dropdown's trigger: in the top bar, or in the drawer when the header has no room for it. */
+    trigger: '.site-header-lang button:visible, .mobile-drawer-lang button:visible',
     /** Option to pick, and text that then shows in the header. */
     option: 'English',
     expectText: /Contact/,

@@ -34,11 +34,12 @@ describe('language picker in the header', () => {
     expect(picker).toHaveAttribute('translate', 'no')
     const header = picker!.closest('.site-header-inner')
     expect(header).not.toBeNull()
-    const kids = Array.from(header!.children)
+    // picker and theme toggle share one slot (.site-header-tools), which moves
+    // into the menu as a whole when the row is too narrow (headerFit.ts)
     const theme = header!.querySelector('.site-header-theme')
     const chip = header!.querySelector('.open-chip')
-    expect(kids.indexOf(picker!)).toBeGreaterThan(kids.indexOf(chip!))
-    expect(kids.indexOf(picker!)).toBeLessThan(kids.indexOf(theme!))
+    expect(chip!.compareDocumentPosition(picker!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(picker!.compareDocumentPosition(theme!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('opens on Swedish by default', async () => {

@@ -140,28 +140,38 @@
 
 /* --- Header: bandet i restaurangens färg ------------------------------------ */
 
+/* Sidhuvudets kant (--gutter) är dess egen padding, så att headerFit.ts mäter
+   raden mot det utrymme den faktiskt har. Raden är lika bred som innehållet
+   (--wrap, 1180 px) och blir bredare på stora skärmar bara när flikarna
+   behöver det (--header-pill sätts av src/shared/headerFit.ts). */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 40;
+  padding-inline: var(--gutter);
   background: var(--accent);
   color: var(--on-accent);
   box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 12%, transparent), 0 8px 20px -14px rgba(0, 0, 0, 0.5);
 }
 
 .site-header-inner {
+  position: relative;
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 20px;
-  width: min(100% - var(--gutter) * 2, var(--wrap));
+  gap: 10px;
+  width: 100%;
+  max-width: var(--header-pill, var(--wrap));
   min-height: 64px;
   margin-inline: auto;
 }
 
+/* namnet till vänster, knapparna till höger, även när flikarna är i menyn */
 .site-header-brand {
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  margin-inline-end: auto;
   color: inherit;
   text-decoration: none;
   min-width: 0;
@@ -183,14 +193,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.site-header-nav {
-  margin-inline-start: auto;
+  /* ett latinskt namn kortas i slutet även i höger-till-vänster-text */
+  unicode-bidi: plaintext;
 }
 
 .site-header-nav ul {
   display: flex;
+  flex-wrap: nowrap;
   gap: 2px;
   list-style: none;
   margin: 0;
@@ -200,6 +209,7 @@
 .site-header-nav a {
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
   min-height: 40px;
   padding: 0 14px;
   border-radius: var(--r-pill);
@@ -208,6 +218,18 @@
   font-size: 0.97rem;
   text-decoration: none;
   transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  position: relative;
+}
+
+/* Träffytan är minst 44 px hög (surfplatta med flikarna i raden) utan att
+   fliken ser större ut, oavsett flikens egen höjd: ytan centreras på fliken. */
+.site-header-nav a::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: max(100%, 44px);
+  transform: translateY(-50%);
 }
 
 .site-header-nav a:hover {
@@ -221,6 +243,8 @@
 }
 
 .open-chip {
+  position: relative;
+  flex: none;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -249,6 +273,7 @@
 }
 
 .open-chip.is-open .open-chip-dot,
+.mobile-drawer-hours-trigger.is-open .open-chip-dot,
 .home-hero-status.is-open .open-chip-dot {
   background: #3ddc84;
   box-shadow: 0 0 0 3px color-mix(in srgb, #3ddc84 28%, transparent);
@@ -258,7 +283,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  width: min(100% - var(--gutter) * 2, var(--wrap));
+  width: min(100%, var(--wrap));
   margin: 0 auto;
   padding: 0 0 10px;
   font-size: 0.9rem;
@@ -285,7 +310,7 @@
 }
 
 .site-header-burger {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
@@ -319,32 +344,69 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
-@media (max-width: 1000px) {
-  .site-header-nav {
-    display: none;
-  }
+/* Toppraden mäter sig själv (src/shared/headerFit.ts) och sätter data-fit.
+   En del som inte får plats får .site-header-off: den lyfts ur raden men
+   behåller sin naturliga bredd, så att den går att mäta och raden vet när
+   den får plats igen. Den ligger mot radens slut och sträcker sig bakåt, så
+   den aldrig ger sidan en vågrät rullning (åt det hållet går det inte att
+   rulla, varken ltr eller rtl). Osynlig, inert och dold för skärmläsare. */
+.site-header-off {
+  position: absolute !important;
+  inset-inline-end: 0;
+  top: 0;
+  width: max-content;
+  visibility: hidden !important;
+  pointer-events: none;
+}
 
-  .open-chip {
-    margin-inline-start: auto;
-  }
+.site-header-nav,
+.site-header-tools,
+.site-header-burger {
+  flex: none;
+}
 
-  .site-header-burger {
-    display: flex;
-  }
+.site-header-tools {
+  display: flex;
+  align-items: center;
+  gap: inherit;
+}
+
+/* öppet-knappen: hela texten eller bara Öppet / Stängt; den andra texten
+   ligger utanför flödet så att båda bredderna går att mäta. Den ligger mot
+   knappens slut och sträcker sig bakåt mot namnet (som .site-header-off),
+   så att den aldrig ger sidan en vågrät rullning i arabiska och persiska. */
+.open-chip-text {
+  white-space: nowrap;
+}
+
+.open-chip .open-chip-text--short,
+.open-chip--short .open-chip-text--full {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 0;
+  visibility: hidden;
+}
+
+.open-chip--short .open-chip-text--short {
+  position: static;
+  visibility: inherit;
 }
 
 @media (max-width: 420px) {
-  .site-header-inner {
-    gap: 10px;
-  }
-
   .open-chip {
     padding: 0 10px;
     font-size: 0.8rem;
   }
 }
 
-/* Mobilmenyn: ett ark från höger. */
+/* Mobilmenyn: ett ark från höger, under sidhuvudet, så att menyknappen
+   (stäng), namnet och temaknappen alltid syns och går att trycka på medan
+   menyn är öppen. Sidhuvudet lyfts över skuggan men ligger kvar under arket.
+   Arket rullar själv när innehållet är högre än skärmen (liggande telefon). */
+.site:has(.mobile-drawer--open) .site-header {
+  z-index: 46;
+}
+
 .mobile-drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -362,12 +424,14 @@
 
 .mobile-drawer {
   position: fixed;
-  top: 0;
+  top: calc(var(--header-h, 64px) + 8px);
   inset-inline-end: 0;
   bottom: 0;
   z-index: 50;
   width: min(86vw, 340px);
-  padding: 76px 16px 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 16px 24px;
   background: var(--surface);
   box-shadow: var(--shadow-lg);
   transform: translateX(100%);
@@ -409,6 +473,46 @@
 .mobile-drawer-list a:hover,
 .mobile-drawer-hours-trigger:hover {
   background: var(--fill);
+}
+
+/* Öppettider i menyn: rubriken och dagens status under den */
+.mobile-drawer-hours-trigger {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  min-height: 64px;
+  padding-block: 8px;
+}
+
+.mobile-drawer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 0.75rem/1.2 var(--mono);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Språk och ljus/mörkt i menyn när de inte får plats i toppraden */
+.mobile-drawer-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 0 16px;
+}
+
+.mobile-drawer-tools .theme-toggle {
+  width: 44px;
+  height: 44px;
+  background: var(--fill);
+  color: var(--ink);
+}
+
+.mobile-drawer-tools .theme-toggle:hover {
+  background: color-mix(in srgb, var(--ink) 10%, var(--fill));
+  color: var(--ink);
 }
 
 /* --- Startsidans hero ---------------------------------------------------------- */
@@ -805,7 +909,7 @@
 
 .mobile-drawer {
   border-radius: 0;
-  padding: 84px 20px 24px;
+  padding: 12px 20px 24px;
   background: var(--surface);
   box-shadow: -14px 0 18px rgba(0, 0, 0, 0.22);
 }
@@ -1071,9 +1175,17 @@
   }
 }
 
-.site-header :focus-visible,
 .home-hero :focus-visible {
   outline-color: var(--on-accent);
+  box-shadow: none;
+}
+
+/* Sidhuvudet tar bort kitets box-shadow-ringar (de syns inte mot bandet), så
+   varje kontroll i det får en egen kontur. :is(...[tabindex]) väger tyngre än
+   kitets `.combo:focus-visible { outline: none }`, även för kommande kontroller. */
+.site-header :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--on-accent);
+  outline-offset: 2px;
   box-shadow: none;
 }
 
@@ -1083,6 +1195,7 @@
 }
 
 .open-chip.is-open .open-chip-dot,
+.mobile-drawer-hours-trigger.is-open .open-chip-dot,
 .home-hero-status.is-open .open-chip-dot {
   background: var(--ok);
 }
@@ -1092,10 +1205,6 @@
 }
 
 @media (max-width: 1000px) {
-  .open-chip {
-    margin-inline-start: auto;
-  }
-
   .site-header-theme {
     margin-inline-end: -4px;
   }
@@ -1138,65 +1247,24 @@
 }
 
 /* Med språkväljaren i raden tar menyn mer plats (längre ord på engelska och
-   spanska): hamburgaren tar över lite tidigare och länkarna bryts aldrig. */
-.site-header-nav a {
-  white-space: nowrap;
-}
-
-.site-header-inner:has(.site-header-lang) {
-  gap: 10px;
-}
-
+   spanska): flikarna är tätare och bryts aldrig. Vad som får plats avgör
+   headerFit.ts genom att mäta, inga brytpunkter: flikarna, öppet-knappen och
+   till sist språk och tema flyttar in i menyn när raden inte räcker. */
 .site-header-inner:has(.site-header-lang) .site-header-nav a {
   padding: 0 10px;
   font-size: 0.92rem;
 }
 
-@media (max-width: 1280px) {
-  .site-header-inner:has(.site-header-lang) .site-header-nav {
-    display: none;
-  }
-
-  .site-header-inner:has(.site-header-lang) .open-chip {
-    margin-inline-start: auto;
-  }
-
-  .site-header-inner:has(.site-header-lang) .site-header-burger {
-    display: flex;
-  }
-}
-
-/* Telefon: namn, öppet-chip, språk, ljus/mörkt och hamburgare ryms i en rad.
-   Språkknappen visar bara flaggan. Chippet blir smalare (smalare typsnitt)
-   och bryter texten på två rader när den inte ryms, så att tiden aldrig
-   klipps bort, på alla fem språk. */
+/* Telefon: språkknappen visar bara flaggan och öppet-knappen har ett
+   smalare typsnitt; texten står alltid på en rad (får den inte plats blir
+   den Öppet / Stängt eller flyttar in i menyn). */
 @media (max-width: 700px) {
-  .site-header-brand {
-    flex: 0 0 auto;
-    max-width: 42%;
-  }
-
   .open-chip {
-    flex: 0 1 auto;
-    min-width: 0;
     padding: 0 8px;
     gap: 6px;
     font-size: 0.74rem;
     font-stretch: 75%;
     letter-spacing: 0;
-  }
-
-  .open-chip > span:nth-of-type(2) {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    min-width: 0;
-    overflow: hidden;
-    white-space: normal;
-    line-height: 1.15;
-    text-align: start;
-    text-wrap: balance;
   }
 
   .site-header .site-header-lang .lang-picker-code {
@@ -1244,30 +1312,6 @@
   }
 }
 
-/* Allra smalaste telefoner: chippet är bara lampan (texten läses upp och öppettiderna öppnas som förut). */
-@media (max-width: 340px) {
-  .site-header-inner {
-    gap: 6px;
-  }
-
-  .site-header-brand {
-    flex: 0 1 auto;
-    max-width: none;
-  }
-
-  .open-chip {
-    flex: none;
-  }
-
-  .open-chip > span:nth-of-type(2) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-}
 
 /* Mobilmenyn glider in från höger i svenska/engelska/spanska och från vänster
    i arabiska/persiska; hamburgaren och pilarna följer med via logiska egenskaper. */

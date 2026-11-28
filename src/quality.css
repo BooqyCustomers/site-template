@@ -38,3 +38,13 @@
 .site-main {
   min-height: 100svh;
 }
+
+/* The owner 2026-11-27: the pointer never changes on the website, whatever
+   it hovers (links, buttons, fields, disabled or busy states, drag areas).
+   Last loaded stylesheet (src/main.tsx), so nothing after it sets a cursor. */
+html,
+html *,
+html *::before,
+html *::after {
+  cursor: default !important;
+}

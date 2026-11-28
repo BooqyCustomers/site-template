@@ -1,4 +1,4 @@
-import { expect, test, type Page, type Response } from '@playwright/test'
+import { expect, test, type Response } from '@playwright/test'
 import { apiGet, guestPost, MARKER, TEST_NAME, testEmail, testPhone } from '../lib/api'
 import { internalLinks, open, settle, sitePaths, watchErrors } from '../lib/pages'
 import { CONFIGURED, NOT_CONFIGURED, SITE_URL, siteConfig } from '../lib/site'
@@ -20,7 +20,6 @@ test.skip(!CONFIGURED, NOT_CONFIGURED)
 
 const paths = CONFIGURED ? await sitePaths() : []
 const cfg = CONFIGURED ? await siteConfig() : null
-const isPhone = (page: Page) => (page.viewportSize()?.width ?? 1440) < 768
 
 for (const path of paths) {
   test(`page ${path} renders without errors`, async ({ page }) => {
@@ -48,9 +47,10 @@ test('header navigation reaches every page', async ({ page }) => {
   await open(page, '/')
   const header = page.locator('header').first()
   const menuButton = header.getByRole('button', { name: /meny|menu/i }).first()
-  // On a phone with a burger: the menu it opens (aria-controls); otherwise the header's links.
+  // With a burger (the header moves the tabs into it whenever they do not fit,
+  // on any width): the menu it opens (aria-controls); otherwise the header's links.
   const links = async () => {
-    if (isPhone(page) && (await menuButton.isVisible())) {
+    if (await menuButton.isVisible()) {
       const drawer = await menuButton.getAttribute('aria-controls')
       if (drawer) {
         if ((await menuButton.getAttribute('aria-expanded')) !== 'true') await menuButton.click()
@@ -68,8 +68,8 @@ test('header navigation reaches every page', async ({ page }) => {
     await (await links()).and(page.locator(`a[href="${href}"]`)).first().click()
     await expect(page).toHaveURL(new RegExp(`${href === '/' ? '/$' : href.replace(/[/]/g, '\\/')}$`))
     await expect(page.locator('h1').first()).toBeVisible()
-    if (isPhone(page) && (await menuButton.isVisible())) {
-      // The phone menu closes after a pick.
+    if (await menuButton.isVisible()) {
+      // The menu closes after a pick.
       await expect(menuButton).toHaveAttribute('aria-expanded', 'false')
     }
   }
@@ -141,12 +141,53 @@ test('order for pickup', async ({ page }) => {
     // Add the first dish and go as far as the payment step (the unpaid order expires by itself).
     await main.getByRole('button', { name: /lägg (till|i)/i }).first().click()
     await main.getByRole('button', { name: /till kassan|gå vidare|fortsätt/i }).first().click()
-    await main.getByRole('textbox', { name: /namn/i }).fill(TEST_NAME)
-    await main.getByRole('textbox', { name: /e-post/i }).fill(testEmail('order-flow'))
-    await main.getByRole('textbox', { name: /telefon/i }).fill(testPhone())
-    await main.getByRole('checkbox', { name: /villkor/i }).check()
-    await main.getByRole('button', { name: /betala|gå vidare|fortsätt/i }).first().click()
-    await expect(page.frameLocator('iframe[name^="__privateStripeFrame"]').first().locator('body')).toBeVisible({ timeout: 30_000 })
+    // The guest's details can be one step or several (site-kit 0.6: name and
+    // mobile, then e-mail and wishes, then the order terms): fill what each
+    // step asks for and go on until Stripe's card form shows. The marketing
+    // box is never ticked. Same loop as site-anar's copy of this spec.
+    // Stripe also adds hidden frames: the card form is the visible one.
+    const stripe = page.locator('iframe[name^="__privateStripeFrame"]:visible').first()
+    const fields: [RegExp, string][] = [
+      [/namn/i, TEST_NAME],
+      [/e-post/i, testEmail('order-flow')],
+      [/telefon|mobil/i, testPhone()],
+    ]
+    // The payment step: never press its pay button (the card form may still be loading).
+    // A step is told apart by its heading.
+    const stepTitle = () => main.getByRole('heading', { level: 1 }).allTextContents().then((t) => t.join('|'))
+    const payStep = async () => (await stripe.isVisible()) || /^Betala$/.test(await stepTitle()) || (await main.getByText(/^Betala med$/).first().isVisible())
+    // The error the kit shows (a rate limit, a validation message), for the failure report.
+    const shownError = async () => {
+      const alert = main.locator('#order-error, [role="alert"]').filter({ hasText: /\S/ })
+      return (await alert.count()) ? (await alert.allTextContents()).join(' | ').trim() : ''
+    }
+    for (let step = 0; step < 5 && !(await payStep()); step++) {
+      const next = main.getByRole('button', { name: /betala|till betalning|gå vidare|fortsätt/i }).first()
+      await expect(next).toBeVisible()
+      for (const [name, value] of fields) {
+        const field = main.getByRole('textbox', { name }).first()
+        if ((await field.isVisible()) && !(await field.inputValue())) await field.fill(value)
+      }
+      const boxes = main.getByRole('checkbox')
+      for (let i = 0; i < (await boxes.count()); i++) {
+        const box = boxes.nth(i)
+        const label = (await box.getAttribute('aria-label')) || (await box.evaluate((el) => (el as HTMLInputElement).labels?.[0]?.textContent ?? ''))
+        if (/erbjudanden|nyheter|nyhetsbrev|marknadsf/i.test(label)) continue
+        if ((await box.isVisible()) && !(await box.isChecked())) await box.check()
+      }
+      const before = await stepTitle()
+      await next.click()
+      // The next step (or the card form) replaces this one; if not, say what the kit shows.
+      await expect(async () => {
+        const advanced = (await payStep()) || (await stepTitle()) !== before
+        const error = advanced ? '' : await shownError()
+        expect(advanced, `step "${before}" did not advance${error ? `; the site shows: ${error}` : ''}`).toBe(true)
+      }).toPass({ timeout: 30_000 })
+    }
+    await expect(stripe).toBeVisible({ timeout: 30_000 }).catch(async (e: Error) => {
+      const error = await shownError()
+      throw error ? new Error(`${e.message}\nThe site shows: ${error}`) : e
+    })
   }
   expect(errors()).toEqual([])
 })
@@ -185,8 +226,10 @@ test('language switch', async ({ page }) => {
   await open(page, '/')
   const pick = async (option: string | RegExp) => {
     const menuButton = page.locator('header').getByRole('button', { name: /meny|menu|منو/i }).first()
-    if (isPhone(page) && !(await page.locator(lang.trigger).isVisible()) && (await menuButton.isVisible())) await menuButton.click()
-    await page.locator(lang.trigger).click()
+    // The header and the drawer both render a picker: take the one that shows (strict mode needs one).
+    const trigger = () => page.locator(lang.trigger).first()
+    if (!(await trigger().isVisible()) && (await menuButton.isVisible())) await menuButton.click()
+    await trigger().click()
     await page.getByRole('option', { name: option }).click()
   }
   await pick(lang.option)
